@@ -1,0 +1,14 @@
+{
+    "context_servers": {
+        "encore-mcp": {
+            "args": [
+                "mcp",
+                "run",
+                "--app=backend-wpqi"
+            ],
+            "command": "encore",
+            "env": {},
+            "source": "custom"
+        }
+    }
+}
