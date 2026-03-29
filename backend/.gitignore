@@ -2,3 +2,7 @@
 encore.gen.go
 encore.gen.cue
 /encore.gen
+
+.env
+.env.*
+.secrets.local.cue
