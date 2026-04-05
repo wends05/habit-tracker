@@ -49,7 +49,12 @@ func (s *Service) findHabitsByUserID(ctx context.Context, userID primitive.Objec
 	}
 
 	var habits []Habit
-	return habits, cursor.All(ctx, &habits)
+
+	if err := cursor.All(ctx, &habits); err != nil {
+		return nil, fmt.Errorf("cannot decode habits: %w", err)
+	}
+
+	return habits, nil
 }
 
 func (s *Service) createHabit(ctx context.Context, userID primitive.ObjectID, habit *CreateHabitInput) (*Habit, error) {
@@ -64,6 +69,7 @@ func (s *Service) createHabit(ctx context.Context, userID primitive.ObjectID, ha
 		UserID:      userID,
 		Name:        habit.Name,
 		EffortLevel: habit.EffortLevel,
+		Color:       habit.Color,
 		Category:    habit.Category,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),

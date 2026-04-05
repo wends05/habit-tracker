@@ -1,8 +1,11 @@
+import { BACKEND_URL } from "@/constants/env";
+import { tryCatch } from "@/lib/tryCatch";
+
 type QueryValue = string | number | boolean | null | undefined;
 
 export type ApiRequestOptions = Omit<RequestInit, "body" | "headers"> & {
 	authToken?: string | null;
-	body?: BodyInit | Record<string, unknown> | null;
+	body?: BodyInit | Record<string, unknown> | undefined;
 	headers?: HeadersInit;
 	query?: Record<string, QueryValue>;
 };
@@ -22,13 +25,12 @@ export class ApiError extends Error {
 }
 
 function getApiBaseUrl() {
-	const url = process.env.EXPO_PUBLIC_API_URL;
 
-	if (!url) {
+	if (!BACKEND_URL) {
 		throw new Error("Missing EXPO_PUBLIC_API_URL");
 	}
 
-	return url.replace(/\/$/, "");
+	return BACKEND_URL.replace(/\/$/, "");
 }
 
 function buildUrl(path: string, query?: Record<string, QueryValue>) {
@@ -100,30 +102,41 @@ async function parseErrorResponse(response: Response) {
 }
 
 export async function apiRequest<T>(path: string, options: ApiRequestOptions = {}) {
-	const { authToken, body, headers, query, ...requestInit } = options;
-	const requestHeaders = normalizeHeaders(headers);
+	return tryCatch<T, ApiError>(
+		async () => {
+			const { authToken, body, headers, query, ...requestInit } = options;
+			const requestHeaders = normalizeHeaders(headers);
 
-	if (authToken) {
-		requestHeaders.set("Authorization", `Bearer ${authToken}`);
-	}
+			if (authToken) {
+				requestHeaders.set("Authorization", `Bearer ${authToken}`);
+			}
 
-	if (isJsonBody(body) && !requestHeaders.has("Content-Type")) {
-		requestHeaders.set("Content-Type", "application/json");
-	}
+			if (isJsonBody(body) && !requestHeaders.has("Content-Type")) {
+				requestHeaders.set("Content-Type", "application/json");
+			}
 
-	const response = await fetch(buildUrl(path, query), {
-		...requestInit,
-		headers: requestHeaders,
-		body: isJsonBody(body) ? JSON.stringify(body) : body,
-	});
+			const response = await fetch(buildUrl(path, query), {
+							...requestInit,
+							headers: requestHeaders,
+							body: isJsonBody(body) ? JSON.stringify(body) : (body as BodyInit | undefined),
+						});
 
-	if (!response.ok) {
-		const errorBody = await parseErrorResponse(response);
-		const message = getErrorMessage(errorBody, `Request failed with status ${response.status}`);
-		const code = typeof errorBody === "object" && errorBody !== null && "code" in errorBody ? String((errorBody as { code?: unknown }).code) : undefined;
+			if (!response.ok) {
+				const errorBody = await parseErrorResponse(response);
+				const message = getErrorMessage(errorBody, `Request failed with status ${response.status}`);
+				const code =
+					typeof errorBody === "object" && errorBody !== null && "code" in errorBody
+						? String((errorBody as { code?: unknown }).code)
+						: undefined;
 
-		throw new ApiError(response.status, message, code, errorBody);
-	}
+				throw new ApiError(response.status, message, code, errorBody);
+			}
 
-	return (await parseResponse(response)) as T;
+			return (await parseResponse(response)) as T;
+		},
+		(error) =>
+			error instanceof ApiError
+				? error
+				: new ApiError(0, error instanceof Error ? error.message : "Request failed", undefined, error),
+	);
 }

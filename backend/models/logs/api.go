@@ -9,7 +9,7 @@ import (
 )
 
 //encore:api auth method=POST path=/logs
-func (s *Service) CreateLog(ctx *context.Context, log *CreateHabitLogInput) (*HabitLog, error) {
+func (s *Service) CreateLog(ctx context.Context, log *CreateHabitLogInput) (*HabitLog, error) {
 	userID, ok := encoreauth.UserID()
 	if !ok {
 		return nil, fmt.Errorf("Unauthorized")
@@ -21,6 +21,6 @@ func (s *Service) CreateLog(ctx *context.Context, log *CreateHabitLogInput) (*Ha
 		return nil, fmt.Errorf("invalid authenticated user ID: %w", err)
 	}
 
-	newLog, err := s.createLog(*ctx, userObjectID, log)
+	newLog, err := s.createLog(ctx, userObjectID, log)
 	return newLog, err
 }

@@ -19,6 +19,7 @@ type Habit struct {
 	ID          primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	UserID      primitive.ObjectID `bson:"user_id" json:"user_id"`
 	Name        string             `bson:"name" json:"name"`
+	Color       string             `bson:"color" json:"color"`
 	EffortLevel EffortLevel        `bson:"effort_level" json:"effort_level"`
 	Category    string             `bson:"category" json:"category"`
 	CreatedAt   time.Time          `bson:"created_at"      json:"createdAt"`
@@ -38,6 +39,7 @@ type GetHabitOutput struct {
 type CreateHabitInput struct {
 	Name        string      `bson:"name" json:"name"`
 	EffortLevel EffortLevel `bson:"effort_level" json:"effort_level"`
+	Color       string      `bson:"color, omitempty" json:"color"`
 	Category    string      `bson:"category" json:"category"`
 }
 type CreateHabitOutput struct {
@@ -48,6 +50,7 @@ type CreateHabitOutput struct {
 type UpdateHabitInput struct {
 	Name        *string      `bson:"name,omitempty" json:"name,omitempty"`
 	EffortLevel *EffortLevel `bson:"effort_level,omitempty" json:"effort_level,omitempty"`
+	Color       *string      `bson:"color,omitempty" json:"color,omitempty"`
 	Category    *string      `bson:"category,omitempty" json:"category,omitempty"`
 }
 type UpdateHabitOutput struct {

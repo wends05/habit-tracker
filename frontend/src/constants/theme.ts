@@ -1,54 +1,28 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
-import { Platform } from "react-native";
-
-const tintColorLight = "#0a7ea4";
-const tintColorDark = "#fff";
-
 export const Colors = {
 	light: {
-		text: "#11181C",
-		background: "#fff",
-		tint: tintColorLight,
-		icon: "#687076",
-		tabIconDefault: "#687076",
-		tabIconSelected: tintColorLight,
+		background: "#fafafa",
+		foreground: "#1a1a1a",
+		muted: "#f5f5f5",
+		mutedForeground: "#2d2d2d",
+		border: "#2d2d2d",
+		primary: "#2d2d2d",
+		card: "#fafafa",
+		cardForeground: "#1a1a1a",
 	},
 	dark: {
-		text: "#ECEDEE",
-		background: "#151718",
-		tint: tintColorDark,
-		icon: "#9BA1A6",
-		tabIconDefault: "#9BA1A6",
-		tabIconSelected: tintColorDark,
+		background: "#1a1a1a",
+		foreground: "#f5f5f5",
+		muted: "#2d2d2d",
+		mutedForeground: "#f5f5f5",
+		border: "#f5f5f5",
+		primary: "#f5f5f5",
+		card: "#1a1a1a",
+		cardForeground: "#f5f5f5",
 	},
-};
+} as const;
 
-export const Fonts = Platform.select({
-	ios: {
-		/** iOS `UIFontDescriptorSystemDesignDefault` */
-		sans: "system-ui",
-		/** iOS `UIFontDescriptorSystemDesignSerif` */
-		serif: "ui-serif",
-		/** iOS `UIFontDescriptorSystemDesignRounded` */
-		rounded: "ui-rounded",
-		/** iOS `UIFontDescriptorSystemDesignMonospaced` */
-		mono: "ui-monospace",
-	},
-	default: {
-		sans: "normal",
-		serif: "serif",
-		rounded: "normal",
-		mono: "monospace",
-	},
-	web: {
-		sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-		serif: "Georgia, 'Times New Roman', serif",
-		rounded:
-			"'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
-		mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
-	},
-});
+export const Fonts = {
+	sans: "DM Sans",
+	medium: "DM Sans Medium",
+	bold: "DM Sans Bold",
+} as const;
